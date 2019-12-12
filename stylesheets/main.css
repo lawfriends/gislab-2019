@@ -5,3 +5,13 @@ h1 {
 h4 {
 	color: gray;
 }
+
+#about {
+	margin-top: 20px;
+}
+
+body {
+	background-image: url("../img/thankyou.PNG");
+    background-repeat:no-repeat;
+    background-size:cover;
+} 
