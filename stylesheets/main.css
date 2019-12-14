@@ -10,8 +10,46 @@ h4 {
 	margin-top: 20px;
 }
 
-body {
+#map {
+	height: 50em;
+	width: 100%;
+}
+
+.ol-mouse-position {
+	right: 42px;
+	color: rgb(255, 255, 255);
+	font-size: 12px;
+	text-align: center;
+	padding: 2.5px;
+	background: rgba(0, 60, 136, 0.5);
+	background-clip: padding-box;
+	border: 3px solid rgba(255, 255, 255, 0.4);
+	border-radius: 4px;
+}
+.ol-overviewmap {
+	left: 8px;
+	bottom: 34px;
+}
+
+.popover {
+	width: 200px;
+	height: auto;
+}
+
+iframe {
+	border: 0px;
+	height: 110px;
+	width: 90vw;
+}
+
+#get-feature-info {
+	border: 0px;
+	height: 110px;
+	width: 90vw;
+}
+
+/*body {
 	background-image: url("../img/thankyou.PNG");
     background-repeat:no-repeat;
     background-size:cover;
-} 
+} */
