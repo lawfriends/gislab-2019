@@ -15,7 +15,7 @@
 var osm = new ol.layer.Tile({
 	title: 'OpenStreetMap',
 	type: 'base',
-	visible: true,
+	visible: false,
 	source: new ol.source.OSM()
 });
 
@@ -61,7 +61,7 @@ var stamenWatercolor = new ol.layer.Tile({
 var stamenToner = new ol.layer.Tile({
 	title: 'Stamen Toner',
 	type: 'base',
-	visible: false,
+	visible: true,
 	source: new ol.source.Stamen({
 		layer: 'toner'
 	})
@@ -130,20 +130,56 @@ var ecuadorRailways = new ol.layer.Vector({
 	})
 });
 
+var enhPlosQuantile = new ol.layer.Image({
+	title: 'Enhanced PLOS roadlink with quantile graduated style',
+	source: new ol.source.ImageWMS({
+		url: 'http://localhost:8082/geoserver/wms',
+		params: {'LAYERS': 'GIS_lab_2019:E-plos', 'STYLES': 'GIS_lab_2019:enh_plos_categorized_quantile'}
+	}),
+	visible: true
+});
+
+var enhPlosSystematica = new ol.layer.Image({
+	title: 'Enhanced PLOS roadlink with the Systematica calssification style',
+	source: new ol.source.ImageWMS({
+		url: 'http://localhost:8082/geoserver/wms',
+		params: {'LAYERS': 'GIS_lab_2019:E-plos', 'STYLES': 'GIS_lab_2019:enh_plos_systematica_classification'}
+	}),
+	visible: false
+});
+
+var origPlosQuantile = new ol.layer.Image({
+	title: 'Original PLOS roadlink with quantile graduated style',
+	source: new ol.source.ImageWMS({
+		url: 'http://localhost:8082/geoserver/wms',
+		params: {'LAYERS': 'GIS_lab_2019:E-plos', 'STYLES': 'GIS_lab_2019:orig_plos_categorized_quantile'}
+	}),
+	visible: false
+});
+
+var origPlosSystematica = new ol.layer.Image({
+	title: 'Original PLOS roadlink with the Systematica calssification style',
+	source: new ol.source.ImageWMS({
+		url: 'http://localhost:8082/geoserver/wms',
+		params: {'LAYERS': 'GIS_lab_2019:E-plos', 'STYLES': 'GIS_lab_2019:orig_plos_systematica_classification'}
+	}),
+	visible: false
+});
+
 var map = new ol.Map({
 	target: document.getElementById('map'),
 	layers: [
 	new ol.layer.Group({
 		title: 'Base Maps',
-		layers: [osm, bingRoads, bingAerial, bingAerialWithLabels, stamenToner, stamenWatercolor]
+		layers: [stamenToner, osm, bingRoads, bingAerial, bingAerialWithLabels, stamenWatercolor]
 	}),
 	new ol.layer.Group({
 		title: 'Overlay Layers',
-		layers: [ecuadorBoundary, ecuadorProvinces, ecuadorRoads, ecuadorRivers, ecuadorRailways]
+		layers: [enhPlosQuantile, enhPlosSystematica, origPlosQuantile, origPlosSystematica]
 	})],
 	view: new ol.View({
-		center: ol.proj.fromLonLat([9.11, 45.27]),
-		zoom: 12
+		center: ol.proj.fromLonLat([9.17537, 45.49559]),
+		zoom: 17
 	}),
 	controls: ol.control.defaults().extend([
 		new ol.control.ScaleLine(),
