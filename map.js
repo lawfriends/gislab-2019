@@ -142,17 +142,17 @@ var map = new ol.Map({
 		layers: [ecuadorBoundary, ecuadorProvinces, ecuadorRoads, ecuadorRivers, ecuadorRailways]
 	})],
 	view: new ol.View({
-		center: ol.proj.fromLonLat([-84, -2]),
-		zoom: 6
+		center: ol.proj.fromLonLat([9.11, 45.27]),
+		zoom: 12
 	}),
 	controls: ol.control.defaults().extend([
 		new ol.control.ScaleLine(),
 		new ol.control.FullScreen(),
-		new ol.control.OverviewMap(),
-		new ol.control.MousePosition({
+		new ol.control.OverviewMap()
+		/*new ol.control.MousePosition({
 			coordinateFormat: ol.coordinate.createStringXY(4),
 			projection: 'EPSG:4326'
-		})
+		})*/
 		])
 });
 
@@ -194,6 +194,7 @@ map.on('pointermove', function(event) {
 });
 
 map.on('click', function(event) {
+	console.log("ciao" + map.coordinate);
 	document.getElementById('get-feature-info').innerHTML = '';
 	var viewResolution = (map.getView().getResolution());
 	var url = ecuadorRoads.getSource().getFeatureInfoUrl(event.coordinate,
