@@ -1,17 +1,3 @@
-// var map = new ol.Map({
-// 	target: document.getElementById('map'),
-// 	layers: [
-// 		new ol.layer.Tile({
-// 			visible: true,
-// 			source: new ol.source.OSM()
-// 		})
-// 	],
-// 	view: new ol.View({
-// 		center: [0, 0],
-// 		zoom: 2
-// 	})
-// });
-
 var osm = new ol.layer.Tile({
 	title: 'OpenStreetMap',
 	type: 'base',
@@ -166,6 +152,15 @@ var origPlosSystematica = new ol.layer.Image({
 	visible: false
 });
 
+var epicollectPoints = new ol.layer.Image({
+	title: 'Collected points',
+	source: new ol.source.ImageWMS({
+		url: 'http://localhost:8082/geoserver/wms',
+		params: {'LAYERS': 'GIS_lab_2019:EPICOLLECT', 'STYLES': 'GIS_lab_2019:epicollect'}
+	}),
+	visible: false
+})
+
 var map = new ol.Map({
 	target: document.getElementById('map'),
 	layers: [
@@ -175,7 +170,7 @@ var map = new ol.Map({
 	}),
 	new ol.layer.Group({
 		title: 'Overlay Layers',
-		layers: [enhPlosQuantile, enhPlosSystematica, origPlosQuantile, origPlosSystematica]
+		layers: [enhPlosQuantile, enhPlosSystematica, origPlosQuantile, origPlosSystematica, epicollectPoints]
 	})],
 	view: new ol.View({
 		center: ol.proj.fromLonLat([9.17537, 45.49559]),
