@@ -53,68 +53,31 @@ var stamenToner = new ol.layer.Tile({
 	})
 });
 
-var ecuadorBoundary = new ol.layer.Image({
-	title: 'Ecuador boundary',
-	source: new ol.source.ImageWMS({
-		url: 'http://localhost:8082/geoserver/wms',
-		params: {'LAYERS': 'Ex_GeoServer:ECU_adm0', 'STYLES': 'restricted'}
-	})
-});
+// var vectorSource = new ol.source.Vector({
+// 	loader: function(extent, resolution, projection) {
+// 		var url = 'http://localhost:8082/geoserver/Ex_GeoServer/ows?service=WFS&' +
+// 		'version=2.0.0&request=GetFeature&typeName=Ex_GeoServer:ECU_rails&' +
+// 		'outputFormat=text/javascript&srsname=EPSG:3857&' +
+// 		'format_options=callback:loadFeatures';
+// 		$.ajax({url: url, dataType: 'jsonp'});
+// 	}
+// });
 
+// var geojsonFormat = new ol.format.GeoJSON();
+// function loadFeatures(response) {
+// 	vectorSource.addFeatures(geojsonFormat.readFeatures(response));
+// }
 
-var ecuadorProvinces = new ol.layer.Image({
-	title: 'Ecuador provinces',
-	source: new ol.source.ImageWMS({
-		url: 'http://localhost:8082/geoserver/wms',
-		params: {'LAYERS': 'Ex_GeoServer:ECU_adm1'}
-	}),
-	opacity: 0.5
-});
-
-var ecuadorRoads = new ol.layer.Image({
-	title: 'Ecuador roads',
-	source: new ol.source.ImageWMS({
-		url: 'http://localhost:8082/geoserver/wms',
-		params: {'LAYERS': 'Ex_GeoServer:ECU_roads'}
-	}),
-	visible: false
-});
-
-var ecuadorRivers = new ol.layer.Image({
-	title: 'Ecuador rivers',
-	source: new ol.source.ImageWMS({
-		url: 'http://localhost:8082/geoserver/wms',
-		params: {'LAYERS': 'Ex_GeoServer:ECU_water_lines'}
-	}),
-	minResolution: 1000,
-	maxResolution: 5000
-});
-
-var vectorSource = new ol.source.Vector({
-	loader: function(extent, resolution, projection) {
-		var url = 'http://localhost:8082/geoserver/Ex_GeoServer/ows?service=WFS&' +
-		'version=2.0.0&request=GetFeature&typeName=Ex_GeoServer:ECU_rails&' +
-		'outputFormat=text/javascript&srsname=EPSG:3857&' +
-		'format_options=callback:loadFeatures';
-		$.ajax({url: url, dataType: 'jsonp'});
-	}
-});
-
-var geojsonFormat = new ol.format.GeoJSON();
-function loadFeatures(response) {
-	vectorSource.addFeatures(geojsonFormat.readFeatures(response));
-}
-
-var ecuadorRailways = new ol.layer.Vector({
-	title: 'Ecuador railways',
-	source: vectorSource,
-	style: new ol.style.Style({
-		stroke: new ol.style.Stroke({
-			color: 'rgb(58, 255, 81)',
-			width: 4
-		})
-	})
-});
+// var ecuadorRailways = new ol.layer.Vector({
+// 	title: 'Ecuador railways',
+// 	source: vectorSource,
+// 	style: new ol.style.Style({
+// 		stroke: new ol.style.Stroke({
+// 			color: 'rgb(58, 255, 81)',
+// 			width: 4
+// 		})
+// 	})
+// });
 
 var enhPlosQuantile = new ol.layer.Image({
 	title: 'Enhanced PLOS roadlink with quantile graduated style',
@@ -159,7 +122,27 @@ var epicollectPoints = new ol.layer.Image({
 		params: {'LAYERS': 'GIS_lab_2019:EPICOLLECT', 'STYLES': 'GIS_lab_2019:epicollect'}
 	}),
 	visible: false
-})
+});
+
+var vectorSource = new ol.source.Vector({
+	loader: function(extent, resolution, projection) {
+		var url = 'http://localhost:8082/geoserver/GIS_lab_2019/ows?service=WFS&' +
+		'version=2.0.0&request=GetFeature&typeName=GIS_lab_2019:EPICOLLECT&' +
+		'outputFormat=text/javascript&srsname=EPSG:32632&' +
+		'format_options=callback:loadFeatures';
+		$.ajax({url: url, dataType: 'jsonp'});
+	}
+});
+
+var geojsonFormat = new ol.format.GeoJSON();
+function loadFeatures(response) {
+	vectorSource.addFeatures(geojsonFormat.readFeatures(response));
+}
+
+var ecuadorRailways = new ol.layer.Vector({
+	title: 'Ajax Epicollect',
+	source: vectorSource
+});
 
 var map = new ol.Map({
 	target: document.getElementById('map'),
@@ -170,7 +153,7 @@ var map = new ol.Map({
 	}),
 	new ol.layer.Group({
 		title: 'Overlay Layers',
-		layers: [enhPlosQuantile, enhPlosSystematica, origPlosQuantile, origPlosSystematica, epicollectPoints]
+		layers: [ecuadorRailways, enhPlosQuantile, enhPlosSystematica, origPlosQuantile, origPlosSystematica, epicollectPoints]
 	})],
 	view: new ol.View({
 		center: ol.proj.fromLonLat([9.17537, 45.49559]),
@@ -203,12 +186,12 @@ map.on('click', function(event) {
 		return feature;
 	});
 	if (feature != null) {
+		console.log("feature found");
 		var pixel = event.pixel;
 		var coord = map.getCoordinateFromPixel(pixel);
 		popup.setPosition(coord);
 		$(elementPopup).attr('title', 'Ecuador railways');
-		$(elementPopup).attr('data-content', '<b>Id: </b>' + feature.get('FID_rail_d') +
-			'</br><b>Description: </b>' + feature.get('F_CODE_DES'));
+		$(elementPopup).attr('data-content', '<b>Id: </b>' + feature.get('roadname'));
 		$(elementPopup).popover({'placement': 'top', 'html': true});
 		$(elementPopup).popover('show');
 	}
@@ -229,7 +212,7 @@ map.on('click', function(event) {
 	document.getElementById('get-feature-info').innerHTML = '';
 	var viewResolution = (map.getView().getResolution());
 	var url = ecuadorRoads.getSource().getFeatureInfoUrl(event.coordinate,
-		viewResolution, 'EPSG:3857', {'INFO_FORMAT': 'text/html'});
+		viewResolution, 'EPSG:32632', {'INFO_FORMAT': 'text/html'});
 	if (url)
 		document.getElementById('get-feature-info').innerHTML = '<iframeseamless src="' + url + '"></iframe>';
 });
