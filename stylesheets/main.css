@@ -11,7 +11,7 @@ h4 {
 }
 
 #map {
-	height: 50em;
+	height: 35em;
 	width: 100%;
 }
 
@@ -46,6 +46,11 @@ iframe {
 	border: 0px;
 	height: 110px;
 	width: 90vw;
+}
+
+#legend{
+	position: absolute;
+	z-index: 100000;
 }
 
 /*body {

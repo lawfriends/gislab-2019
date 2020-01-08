@@ -53,32 +53,6 @@ var stamenToner = new ol.layer.Tile({
 	})
 });
 
-// var vectorSource = new ol.source.Vector({
-// 	loader: function(extent, resolution, projection) {
-// 		var url = 'http://localhost:8082/geoserver/Ex_GeoServer/ows?service=WFS&' +
-// 		'version=2.0.0&request=GetFeature&typeName=Ex_GeoServer:ECU_rails&' +
-// 		'outputFormat=text/javascript&srsname=EPSG:3857&' +
-// 		'format_options=callback:loadFeatures';
-// 		$.ajax({url: url, dataType: 'jsonp'});
-// 	}
-// });
-
-// var geojsonFormat = new ol.format.GeoJSON();
-// function loadFeatures(response) {
-// 	vectorSource.addFeatures(geojsonFormat.readFeatures(response));
-// }
-
-// var ecuadorRailways = new ol.layer.Vector({
-// 	title: 'Ecuador railways',
-// 	source: vectorSource,
-// 	style: new ol.style.Style({
-// 		stroke: new ol.style.Stroke({
-// 			color: 'rgb(58, 255, 81)',
-// 			width: 4
-// 		})
-// 	})
-// });
-
 var enhPlosQuantile = new ol.layer.Image({
 	title: 'Enhanced PLOS roadlink with quantile graduated style',
 	source: new ol.source.ImageWMS({
@@ -121,14 +95,14 @@ var epicollectPoints = new ol.layer.Image({
 		url: 'http://localhost:8082/geoserver/wms',
 		params: {'LAYERS': 'GIS_lab_2019:EPICOLLECT', 'STYLES': 'GIS_lab_2019:epicollect'}
 	}),
-	visible: false
+	visible: true
 });
 
 var vectorSource = new ol.source.Vector({
 	loader: function(extent, resolution, projection) {
 		var url = 'http://localhost:8082/geoserver/GIS_lab_2019/ows?service=WFS&' +
 		'version=2.0.0&request=GetFeature&typeName=GIS_lab_2019:EPICOLLECT&' +
-		'outputFormat=text/javascript&srsname=EPSG:32632&' +
+		'outputFormat=text/javascript&srsname=EPSG:3857&' +
 		'format_options=callback:loadFeatures';
 		$.ajax({url: url, dataType: 'jsonp'});
 	}
@@ -139,8 +113,8 @@ function loadFeatures(response) {
 	vectorSource.addFeatures(geojsonFormat.readFeatures(response));
 }
 
-var ecuadorRailways = new ol.layer.Vector({
-	title: 'Ajax Epicollect',
+var queryablePoints = new ol.layer.Vector({
+	title: 'Queryable Epicollect Points',
 	source: vectorSource
 });
 
@@ -153,7 +127,7 @@ var map = new ol.Map({
 	}),
 	new ol.layer.Group({
 		title: 'Overlay Layers',
-		layers: [ecuadorRailways, enhPlosQuantile, enhPlosSystematica, origPlosQuantile, origPlosSystematica, epicollectPoints]
+		layers: [queryablePoints, enhPlosQuantile, enhPlosSystematica, origPlosQuantile, origPlosSystematica, epicollectPoints]
 	})],
 	view: new ol.View({
 		center: ol.proj.fromLonLat([9.17537, 45.49559]),
@@ -162,11 +136,11 @@ var map = new ol.Map({
 	controls: ol.control.defaults().extend([
 		new ol.control.ScaleLine(),
 		new ol.control.FullScreen(),
-		new ol.control.OverviewMap()
-		/*new ol.control.MousePosition({
+		new ol.control.OverviewMap(),
+		new ol.control.MousePosition({
 			coordinateFormat: ol.coordinate.createStringXY(4),
 			projection: 'EPSG:4326'
-		})*/
+			})
 		])
 });
 
@@ -186,12 +160,11 @@ map.on('click', function(event) {
 		return feature;
 	});
 	if (feature != null) {
-		console.log("feature found");
 		var pixel = event.pixel;
 		var coord = map.getCoordinateFromPixel(pixel);
 		popup.setPosition(coord);
-		$(elementPopup).attr('title', 'Ecuador railways');
-		$(elementPopup).attr('data-content', '<b>Id: </b>' + feature.get('roadname'));
+		$(elementPopup).attr('title', 'Collected points');
+		$(elementPopup).attr('data-content', '<b>Type: </b>' + feature.get('2_Data_Typ'));
 		$(elementPopup).popover({'placement': 'top', 'html': true});
 		$(elementPopup).popover('show');
 	}
@@ -199,20 +172,10 @@ map.on('click', function(event) {
 
 map.on('pointermove', function(event) {
 	if (event.dragging) {
-		$(elementPopup).popover('destroy');
+		$(elementPopup).popover('dispose');
 		return;
 	}
 	var pixel = map.getEventPixel(event.originalEvent);
 	var hit = map.hasFeatureAtPixel(pixel);
 	map.getTarget().style.cursor = hit ? 'pointer' : '';
-});
-
-map.on('click', function(event) {
-	console.log("ciao" + map.coordinate);
-	document.getElementById('get-feature-info').innerHTML = '';
-	var viewResolution = (map.getView().getResolution());
-	var url = ecuadorRoads.getSource().getFeatureInfoUrl(event.coordinate,
-		viewResolution, 'EPSG:32632', {'INFO_FORMAT': 'text/html'});
-	if (url)
-		document.getElementById('get-feature-info').innerHTML = '<iframeseamless src="' + url + '"></iframe>';
 });
