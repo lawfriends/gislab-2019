@@ -6,9 +6,9 @@ var osm = new ol.layer.Tile({
 });
 
 var bingRoads = new ol.layer.Tile({
-	title: 'Bing Maps—Roads',
+	title: 'Bing Maps - Roads',
 	type: 'base',
-	visible: false,
+	visible: true,
 	source: new ol.source.BingMaps({
 		key: 'AkHprafvjnVPHZ4pzr1NpPmBYs1wx4Ybk6rfAjLFJIDRK4Sf4dWYAangV_LiySrU',
 		imagerySet: 'Road'
@@ -16,7 +16,7 @@ var bingRoads = new ol.layer.Tile({
 });
 
 var bingAerial = new ol.layer.Tile({
-	title: 'Bing Maps—Aerial',
+	title: 'Bing Maps - Aerial',
 	type: 'base',
 	visible: false,
 	source: new ol.source.BingMaps({
@@ -25,15 +25,6 @@ var bingAerial = new ol.layer.Tile({
 	})
 });
 
-var bingAerialWithLabels = new ol.layer.Tile({
-	title: 'Bing Maps—Aerial with Labels',
-	type: 'base',
-	visible: false,
-	source: new ol.source.BingMaps({
-		key: 'AkHprafvjnVPHZ4pzr1NpPmBYs1wx4Ybk6rfAjLFJIDRK4Sf4dWYAangV_LiySrU',
-		imagerySet: 'AerialWithLabels'
-	})
-});
 
 var stamenWatercolor = new ol.layer.Tile({
 	title: 'Stamen Watercolor',
@@ -47,7 +38,7 @@ var stamenWatercolor = new ol.layer.Tile({
 var stamenToner = new ol.layer.Tile({
 	title: 'Stamen Toner',
 	type: 'base',
-	visible: true,
+	visible: false,
 	source: new ol.source.Stamen({
 		layer: 'toner'
 	})
@@ -63,7 +54,7 @@ var enhPlosQuantile = new ol.layer.Image({
 });
 
 var enhPlosSystematica = new ol.layer.Image({
-	title: 'Enhanced PLOS roadlink with the Systematica calssification style',
+	title: 'Enhanced PLOS roadlink with the Systematica classification style',
 	source: new ol.source.ImageWMS({
 		url: 'http://localhost:8082/geoserver/wms',
 		params: {'LAYERS': 'GIS_lab_2019:E-plos', 'STYLES': 'GIS_lab_2019:enh_plos_systematica_classification'}
@@ -81,7 +72,7 @@ var origPlosQuantile = new ol.layer.Image({
 });
 
 var origPlosSystematica = new ol.layer.Image({
-	title: 'Original PLOS roadlink with the Systematica calssification style',
+	title: 'Original PLOS roadlink with the Systematica classification style',
 	source: new ol.source.ImageWMS({
 		url: 'http://localhost:8082/geoserver/wms',
 		params: {'LAYERS': 'GIS_lab_2019:E-plos', 'STYLES': 'GIS_lab_2019:orig_plos_systematica_classification'}
@@ -123,7 +114,7 @@ var map = new ol.Map({
 	layers: [
 	new ol.layer.Group({
 		title: 'Base Maps',
-		layers: [stamenToner, osm, bingRoads, bingAerial, bingAerialWithLabels, stamenWatercolor]
+		layers: [stamenToner, osm, bingRoads, bingAerial, stamenWatercolor]
 	}),
 	new ol.layer.Group({
 		title: 'Overlay Layers',
@@ -164,7 +155,18 @@ map.on('click', function(event) {
 		var coord = map.getCoordinateFromPixel(pixel);
 		popup.setPosition(coord);
 		$(elementPopup).attr('title', 'Collected points');
-		$(elementPopup).attr('data-content', '<b>Type: </b>' + feature.get('2_Data_Typ'));
+		if (feature.get('2_Data_Typ')==='Number of lanes'){
+			$(elementPopup).attr('data-content', '<b>Type: </b>' + feature.get('2_Data_Typ') +
+				'<br><b>Value: </b>' + feature.get('3_Value'));
+		}
+		else if(feature.get('2_Data_Typ')==='Width of sidewalk' ||
+			feature.get('2_Data_Typ')==='Width of bike lane and shoulder' || feature.get('2_Data_Typ')==='Buffer'){
+			$(elementPopup).attr('data-content', '<b>Type: </b>' + feature.get('2_Data_Typ') +
+				'<br><b>Value: </b>' + feature.get('3_Value') + 'm');
+		}
+		else{
+			$(elementPopup).attr('data-content', '<b>Type: </b>' + feature.get('2_Data_Typ'));
+		}
 		$(elementPopup).popover({'placement': 'top', 'html': true});
 		$(elementPopup).popover('show');
 	}

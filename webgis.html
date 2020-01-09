@@ -38,15 +38,37 @@ layerswitcher/master/src/ol-layerswitcher.css">
 			</ul>
 		</div>
 	</nav>
-	<div class="container">
+	<div class="container" id="map_page">
 		<h2><b><center>OpenLayers Map</center></b></h2>
 		<div id="map">
 			<div id="popup"></div>
 		</div>
 		<script src="map.js"></script>
-		<div id="legend">
-				<img src="http://localhost:8082/geoserver/wms?REQUEST=GetLegendGraphic&VERSION=1.0.0&FORMAT=image/png&WIDTH=20&HEIGHT=20&LAYER=GIS_lab_2019:EPICOLLECT">
-		</div> 
+		<div class="container legend">
+			<h3>Legend:</h3>
+		  <div class="row">
+		    <div class="col-sm legend_element">
+		    	<h5>Collected points</h5>
+		      <img src="http://localhost:8082/geoserver/wms?REQUEST=GetLegendGraphic&VERSION=1.0.0&FORMAT=image/png&WIDTH=30&HEIGHT=30&LAYER=GIS_lab_2019:EPICOLLECT">
+		    </div>
+		    <div class="col-sm legend_element">
+		    	<h5>Original PLOS - Systematica classification style</h5>
+		      <img src="http://localhost:8082/geoserver/wms?REQUEST=GetLegendGraphic&VERSION=1.0.0&FORMAT=image/png&WIDTH=20&HEIGHT=30&LAYER=GIS_lab_2019:E-plos&STYLE=GIS_lab_2019:orig_plos_systematica_classification">
+		    </div>
+		    <div class="col-sm legend_element">
+		    	<h5>Original PLOS - quantile graduated style</h5>
+		      <img src="http://localhost:8082/geoserver/wms?REQUEST=GetLegendGraphic&VERSION=1.0.0&FORMAT=image/png&WIDTH=20&HEIGHT=30&LAYER=GIS_lab_2019:E-plos&STYLE=GIS_lab_2019:orig_plos_categorized_quantile">
+		    </div>
+		    <div class="col-sm legend_element">
+		    	<h5>Enhanced PLOS - Systematica classification style</h5>
+		      <img src="http://localhost:8082/geoserver/wms?REQUEST=GetLegendGraphic&VERSION=1.0.0&FORMAT=image/png&WIDTH=20&HEIGHT=30&LAYER=GIS_lab_2019:E-plos&STYLE=GIS_lab_2019:enh_plos_systematica_classification">
+		    </div>
+		    <div class="col-sm legend_element">
+		    	<h5>Enhanced PLOS - quantile graduated style</h5>
+		      <img src="http://localhost:8082/geoserver/wms?REQUEST=GetLegendGraphic&VERSION=1.0.0&FORMAT=image/png&WIDTH=20&HEIGHT=30&LAYER=GIS_lab_2019:E-plos&STYLE=GIS_lab_2019:enh_plos_categorized_quantile">
+		    </div>
+		  </div>
+		</div>
 	</div>
 </body>
 <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>

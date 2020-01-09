@@ -33,9 +33,25 @@
 		<div class="jumbotron" id="about">
 			<h3 class="display-4">About the project</h3>
 			<p class="lead">This is the website for the Politecnico di Milano's GIS project (2019). This project revolves around the calculation of the Pedestrian Level Of Safety (PLOS) for a network of road in the 9th Municipality of Milan. The work was done in groups, and our group covered the area of Lancetti station, comprehensive of viale Vincenzo Lancetti, via dell'Aprica, viale Luigi Torelli, via Maloia, via Resegone, piazzale Costantino Nigra, viale Edoardo Jenner, via Edoardo Porro and via Teglio.</p>
-			<p>The PLOS is an index for evaluating walking conditions on road and street corridors in urban environment, so it is a useful parameter to measure comfort and safety of walkways.</p>
+			<p>The PLOS is an index for evaluating walking conditions on road and street corridors in urban environment, so it is a useful parameter to measure comfort and safety of walkways. It counts five categories: from A (best conditions) to F (worst conditions). The aim of this project was to calculate a first PLOS index for every road and an enhanced PLOS (or E-PLOS, comprehending additional information such as presence of lightnings or curb ramps).
+			</p>
 			<hr class="my-4">
-			<p>The data were collected using the EpiCollect5 app and website through an on-field measurement.</p>
+			<p>We can divide the procedure followed in this project in three steps:
+				<ul>
+					<li>
+						Collecting Data on site: the first step of this project consists in a field survey, in order to collect all the information needed in the E-PLOS formula: number of lightnings and curb ramps, number of lanes, width of sidewalk, width of bike lane, width of shoulder and presence of buffer.
+						We collected all this data through the application EPICOLLECT, which associate GPS coordinate to a certain information. Through the website it was possible to download the raw data in CSV format.
+					</li>
+					<li>
+						Processing of the data: we decided to process the raw data with QGIS. In this step we uploaded all the data as a point shapefile, then we associated each point to a certain road-network segment using a 10m buffer for the spatial relationship.
+						For each segment we evaluated the missing paramethers (e.g. number of lightnings) needed in the formula and then we calculated the first PLOS and the E-PLOS using the given formulas.
+					</li>
+					<li>
+						Building a website and WebGIS: for the display of our results we built a website consisting of two static pages of information about ourselves and the project, and a page containing a map with our final results. The website was coded using html, JavaScript and CSS, and built using several technologies, such as Bootstrap for syling, Font-awesome for typos and icons, jQuery and OpenLayers. The latter was used to build the map and the shapefiles that make it up. The roadlink shapefiles associated with the PLOS information were stored in a server using GeoServer functionalities, and then retrieved using both WMS and WFS methods. The styles of the shapefiles were also uploaded in GeoServer using the .sld format and then applied on the map. We decided to incorporate in our map 4 different roadlink shapefiles: two for the first calculation of the PLOS (styled in two different ways, first with the guidelines given by Systematica and then with a quantile distribution) and two for the enhanced PLOS (also styled in the same way as before). The map furthermore contains the field-collected points, which have been made queryable in order to know what information they represent. Finally, the map contains 5 different base maps, a legend for all the shapefiles and controls for navigation and more information. 
+					</li>
+				</ul>
+				In the end, analyzing the results, we saw that as we expected the mean E-PLOS value (5,72) is very high; this happens mainly because the area we analyzed is in a very high-traffic zone and usually there are no bike-lanes or any buffers or shoulders on the sidewalks. In addition there is via Edoardo Jenner, which is one of the most important and trafficated street in Milan and the average speed of the vehicles is very high.
+			</p>
 			<a class="btn btn-primary btn-lg" href="./webgis.html" role="button">Go to the WebGIS</a>
 		</div>
 	</div>
